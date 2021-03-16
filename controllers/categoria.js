@@ -24,6 +24,7 @@ const categoriaControllers = {
             categoria
         })
     },
+
     categoriaPost: async (req, res) => {
         const { nombre, descripcion } = req.body;
         const categoria = new Categoria({ nombre, descripcion });
@@ -34,6 +35,7 @@ const categoriaControllers = {
             categoria
         })
     },
+
     categoriaPut: async (req, res) => {
         const { id } = req.params;
         const { _id, estado, createdAt, __v, ...resto} = req.body;
@@ -44,6 +46,7 @@ const categoriaControllers = {
             categoria
         })
     },
+
     categoriaPutActivar: async (req, res) => {
         const { id } = req.params;
         const categoria = await Categoria.findByIdAndUpdate(id, {estado: 1});
@@ -63,7 +66,7 @@ const categoriaControllers = {
     categoriaDelete: async (req, res) => {
         const { id } = req.params;
             
-        const categoria = await Categoria.findByIdAndDelete(id);
+        await Categoria.findByIdAndDelete(id);
 
         res.json({
             "status": "deleted"

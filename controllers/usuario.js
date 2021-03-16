@@ -1,5 +1,6 @@
 import Usuario from '../models/usuario.js';
 import bcryptjs from 'bcryptjs';
+import { generarJWT } from '../middlewares/validar-jwt.js';
 
 
 const usuarioControllers = {
@@ -61,7 +62,7 @@ const usuarioControllers = {
             })
         }
 
-        const token = await generarJWT(usuario.id)
+        const token = await generarJWT(usuario.id);
 
         res.json({
             usuario,
