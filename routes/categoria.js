@@ -8,7 +8,10 @@ import validarRoles from '../middlewares/validar-rol.js';
 
 const router = Router();
 
-router.get('/', categoriaControllers.categoriaGet);
+router.get('/',[
+    validarJWT,
+    validarRoles('ALMACENISTA_ROL')
+], categoriaControllers.categoriaGet);
 router.get('/:id', [
     validarJWT,
     validarRoles('ALMACENISTA_ROL'),
