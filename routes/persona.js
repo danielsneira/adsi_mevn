@@ -4,7 +4,7 @@ import personaControllers from '../controllers/persona.js';
 import { existePersonaByEmail, existePersonaByNombre } from '../helpers/personas.js';
 import { validarCampos } from '../middlewares/validar-campos.js';
 import { validarJWT } from '../middlewares/validar-jwt.js';
-import validarRoles from '../middlewares/validar-rol';
+import validarRoles from '../middlewares/validar-rol.js';
 
 const router = Router();
 
