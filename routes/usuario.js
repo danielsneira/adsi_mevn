@@ -1,12 +1,18 @@
 import { Router } from 'express';
+import { check } from 'express-validator';
 import usuarioControllers from '../controllers/usuario.js'
 import { existeUsuarioById } from '../helpers/usuarios.js';
 import { validarCampos } from '../middlewares/validar-campos.js';
 import { validarJWT } from '../middlewares/validar-jwt.js';
+import validarRoles from '../middlewares/validar-rol.js';
 
 const router = Router();
 
-router.get('/', usuarioControllers.usuarioGet);
+router.get('/',[
+    validarJWT,
+    validarRoles()
+], usuarioControllers.usuarioGet);
+
 router.get('/:id', [
     validarJWT,
     check('id', 'No es un ID valido').isMongoId(),
@@ -15,7 +21,6 @@ router.get('/:id', [
 ], usuarioControllers.usuarioGetById);
 
 router.post('/', [
-    validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('email', 'El email es obligatorio').not().isEmpty(),
     check('rol', 'El rol es obligatorio').not().isEmpty(),

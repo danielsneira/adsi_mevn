@@ -1,5 +1,5 @@
 import Usuario from '../models/usuario.js';
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { generarJWT } from '../middlewares/validar-jwt.js';
 
 
@@ -30,8 +30,8 @@ const usuarioControllers = {
         const { nombre, email, password, rol } = req.body;
         const usuario = new Usuario({ nombre, email, password, rol });
 
-        const salt = bcryptjs.genSaltSync();
-        usuario.password = bscryptjs.hashSync(password, salt);
+        const salt = bcrypt.genSaltSync();
+        usuario.password = bcrypt.hashSync(password, salt);
 
         await usuario.save();
 
@@ -43,11 +43,10 @@ const usuarioControllers = {
     login: async (req, res) => {
         const { email, password } = req.body;
 
-        const usuario = await Usuario.findOne({ email, password })
-
+        const usuario = await Usuario.findOne({email});
         if (!usuario) {
             return res.json({
-                msg: 'usuario/Password incorrectos'
+                msg: 'usuario/password incorrectos'
             })
         }
         if (usuario.estado === 0) {
@@ -55,7 +54,7 @@ const usuarioControllers = {
                 msg: 'usuario inactivo'
             })
         }
-        const validarPassword = bcryptjs.compareSync(password, usuario.password)
+        const validarPassword = bcrypt.compareSync(password, usuario.password)
         if (!validarPassword) {
             return res.json({
                 msg: 'Password incorrecta'
@@ -75,8 +74,8 @@ const usuarioControllers = {
         const { _id, estado, createdAt, __v, email, rol, password, ...resto } = req.body;
 
         if (password) {
-            const salt = bcryptjs.genSaltSync();
-            resto.password = bscryptjs.hashSync(password, salt);
+            const salt = bcrypt.genSaltSync();
+            resto.password = bcrypt.hashSync(password, salt);
         }
 
         const usuario = await Usuario.findByIdAndUpdate(id, resto);

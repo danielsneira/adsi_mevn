@@ -1,11 +1,12 @@
 import jwt from 'jsonwebtoken'
-import { existeUsuarioById } from '../helpers/usuario.js';
+import { existeUsuarioById } from '../helpers/usuarios.js';
+import Usuario from '../models/usuario.js';
 
 const generarJWT = (uid = '') => {
 	return new Promise((resolve, reject) => {
 		// checkToken()
 		const payload = { uid }
-		jwt.sign(payload, process.env.Secretprivatekey, {
+		jwt.sign(payload, process.env.SECRETPRIVATEKEY, {
 			expiresIn: '7d'
 		}, (err, token) => {
 			if (err) {
@@ -15,11 +16,10 @@ const generarJWT = (uid = '') => {
 			}
 		})
 	})
-
 }
 
-const validarJWT = async (req, res) => {
-	const token = req.header('token')
+const validarJWT = async (req, res, next) => {
+	const token = req.header("token")
 	if (!token) {
 		return res.status(401).json({
 			msg: 'No hay token en la peticion'
@@ -27,7 +27,7 @@ const validarJWT = async (req, res) => {
 	}
 
 	try {
-		const { uid } = jwt.verify(token, process.evn.secretprivatekey);
+		const { uid } = jwt.verify(token, process.env.SECRETPRIVATEKEY);
 		const usuario = await Usuario.findById(uid)
 		if (!usuario) {
 			return res.status(401).json({
@@ -43,13 +43,14 @@ const validarJWT = async (req, res) => {
 
 		req.usuario = usuario;
 
+		next();
+
 	} catch (err) {
+		console.log(err)
 		res.status(401).json({
-			msg: 'Token no valido'
+			msg: 'Token no valido err'
 		})
-
 	}
-
 }
 
 async function checkToken(token) {
@@ -63,8 +64,6 @@ async function checkToken(token) {
 	}
 
 	const existeUsuario = existeUsuarioById(__id)
-
-
 }
 
 export { generarJWT, validarJWT }
