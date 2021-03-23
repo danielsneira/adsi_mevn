@@ -1,13 +1,52 @@
 import Persona from '../models/persona.js'
 
 const personaControllers = {
+    personaPost: async (req, res) => {
+        const { tipoPersona, nombre, tipoDocumento, numDocumento, direccion, telefono, email } = req.body;
+        const persona = new Persona({ tipoPersona, nombre, tipoDocumento, numDocumento, direccion, telefono, email });
+
+        await persona.save();
+
+        res.json({
+            persona
+        })
+    },
     personaGet: async (req, res) => {
         const value = req.query.value;
-        const persona = await Persona
-            .find({
-                $or: [
+        const persona = await Persona.find({
+            $or: [
                 { nombre: new RegExp(value, 'i') },
-                { descripcion: new RegExp(value, 'i') }
+                { email: new RegExp(value, 'i') }
+            ],
+        });
+
+        res.json({
+            persona
+        })
+    },
+    personaGetClientes: async (req, res) => {
+        const value = req.query.value;
+        const persona = await Persona.find({
+            tipoPersona: 'Cliente',
+            $or: [
+                { tipoPersona: 'Cliente', },
+                { nombre: new RegExp(value, 'i') },
+                { email: new RegExp(value, 'i') }
+            ],
+        });
+
+        res.json({
+            persona
+        })
+    },
+    personaGetProveedores: async (req, res) => {
+        const value = req.query.value;
+        const persona = await Persona.find({
+            tipoPersona: 'Proveedor',
+            $or: [
+                { tipoPersona: 'Cliente', },
+                { nombre: new RegExp(value, 'i') },
+                { email: new RegExp(value, 'i') }
             ],
         });
 
@@ -24,19 +63,9 @@ const personaControllers = {
             persona
         })
     },
-    personaPost: async (req, res) => {
-        const { tipoPersona,nombre, tipoDocumento, numDocumento, direccion, telefono, email  } = req.body;
-        const persona = new persona({ tipoPersona,nombre, tipoDocumento, numDocumento, direccion, telefono, email });
-
-        await Persona.save();
-
-        res.json({
-            persona
-        })
-    },
     personaPut: async (req, res) => {
         const { id } = req.params;
-        const { _id, estado, createdAt, __v, ...resto} = req.body;
+        const { _id, estado, createdAt, __v, ...resto } = req.body;
 
         const persona = await Persona.findByIdAndUpdate(id, resto);
 
@@ -46,7 +75,7 @@ const personaControllers = {
     },
     personaPutActivar: async (req, res) => {
         const { id } = req.params;
-        const persona = await Persona.findByIdAndUpdate(id, {estado: 1});
+        const persona = await Persona.findByIdAndUpdate(id, { estado: 1 });
 
         res.json({
             "persona": persona.estado
@@ -54,22 +83,13 @@ const personaControllers = {
     },
     personaPutDesactivar: async (req, res) => {
         const { id } = req.params;
-        const persona = await Persona.findByIdAndUpdate(id, {estado: 0});
+        const persona = await Persona.findByIdAndUpdate(id, { estado: 0 });
 
         res.json({
             "persona": persona.estado
-        })
-    },
-    personaDelete: async (req, res) => {
-        const { id } = req.params;
-            
-        const persona = await Persona.findByIdAndDelete(id);
-
-        res.json({
-            "status": "deleted"
         })
     }
 }
 
 
-export default personaControllers; 
+export default personaControllers;
