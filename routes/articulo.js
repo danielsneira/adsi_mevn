@@ -1,7 +1,9 @@
 import {Router} from 'express';
+import { check } from 'express-validator';
 import articuloControllers from '../controllers/articulo.js'
 import { existeArticuloById } from '../helpers/articulo.js';
 import { existeCategoriaById } from '../helpers/categorias.js';
+import { validarCampos } from '../middlewares/validar-campos.js';
 import { validarJWT } from '../middlewares/validar-jwt.js';
 import validarRoles from '../middlewares/validar-rol.js';
 

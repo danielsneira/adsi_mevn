@@ -20,9 +20,9 @@ const articuloControllers = {
     },
     articuloPost: async (req, res) => {
         const { categoria, codigo, nombre, descripcion, precioVenta, stock } = req.body;
-        const articulo = new articulo({ categoria, codigo, nombre, descripcion, precioVenta, stock });
+        const articulo = new Articulo({ categoria, codigo, nombre, descripcion, precioVenta, stock });
 
-        await Articulo.save();
+        await articulo.save();
 
         res.json({
             articulo
@@ -43,7 +43,7 @@ const articuloControllers = {
         const articulo = await Articulo.findByIdAndUpdate(id, {estado: 1});
 
         res.json({
-            "articulo": articulo.estado
+            "articulo": 'activado'
         })
     },
     articuloPutDesactivar: async (req, res) => {
@@ -51,7 +51,7 @@ const articuloControllers = {
         const articulo = await Articulo.findByIdAndUpdate(id, {estado: 0});
 
         res.json({
-            "articulo": articulo.estado
+            "articulo": 'desactivado'
         })
     },
     articuloDelete: async (req, res) => {
