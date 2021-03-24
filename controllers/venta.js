@@ -3,7 +3,7 @@ import Venta from '../models/venta.js'
 const ventaControllers = {
     ventaPost: async (req, res) => {
         const { usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}] } = req.body;
-        const venta = new venta({ usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}]  });
+        const venta = new Venta({ usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}]  });
 
         await venta.save();
 

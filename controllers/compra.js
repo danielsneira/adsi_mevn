@@ -3,9 +3,9 @@ import Compra from '../models/compra.js'
 const compraControllers = {
     compraPost: async (req, res) => {
         const { usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}] } = req.body;
-        const compra = new compra({ usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}] });
+        const compra = new Compra({ usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}] });
 
-        await Compra.save();
+        await compra.save();
 
         res.json({
             compra
