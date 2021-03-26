@@ -1,75 +1,79 @@
-import Venta from '../models/venta.js'
+import Venta from "../models/venta.js";
+import { activarVenta, desactivarVenta, quitarArticulos } from "../helpers/ingresos.js";
 
 const ventaControllers = {
-    ventaPost: async (req, res) => {
-        const { usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}] } = req.body;
-        const venta = new Venta({ usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}]  });
+  ventaPost: async (req, res) => {
+    const {
+      usuario,
+      persona,
+      tipoComprobante,
+      serieComprobante,
+      numComprobante,
+      impuesto,
+      total,
+      detalles,
+    } = req.body;
+    const venta = new Venta({
+      usuario,
+      persona,
+      tipoComprobante,
+      serieComprobante,
+      numComprobante,
+      impuesto,
+      total,
+      detalles,
+    });
 
-        await venta.save();
+    detalles.forEach(async (itemVenta) => {
+      quitarArticulos(itemVenta._id, itemVenta.cantidad);
+    });
 
-        res.json({
-            venta
-        })
-    },
-    ventaGet: async (req, res) => {
-        const value = req.query.value;
-        const venta = await Venta
-            .find({
-                $or: [
-                { nombre: new RegExp(value, 'i') },
-                { descripcion: new RegExp(value, 'i') }
-            ],
-        });
+    await venta.save();
 
-        res.json({
-            venta
-        })
-    },
-    ventaGetById: async (req, res) => {
-        const { id } = req.params;
-        const venta = await Venta
-            .findOne({ _id: id });
+    res.json({
+      venta,
+    });
+  },
+  ventaGet: async (req, res) => {
+    const value = req.query.value;
+    const venta = await Venta.find({
+      $or: [{ nombre: new RegExp(value, "i") }, { numComprobante }],
+    });
 
-        res.json({
-            venta
-        })
-    },
-    ventaPut: async (req, res) => {
-        const { id } = req.params;
-        const { _id, estado, createdAt, __v, ...resto} = req.body;
+    res.json({
+      venta,
+    });
+  },
+  ventaGetById: async (req, res) => {
+    const { id } = req.params;
+    const venta = await Venta.findOne({ _id: id });
 
-        const venta = await Venta.findByIdAndUpdate(id, resto);
+    res.json({
+      venta,
+    });
+  },
+  
+  ventaPutActivar: async (req, res) => {
+    const { id } = req.params;
+    const venta = await Venta.findByIdAndUpdate(id, { estado: 1 });
 
-        res.json({
-            venta
-        })
-    },
-    ventaPutActivar: async (req, res) => {
-        const { id } = req.params;
-        const venta = await Venta.findByIdAndUpdate(id, {estado: 1});
+    activarVenta(venta._id)
 
-        res.json({
-            "venta": venta.estado
-        })
-    },
-    ventaPutDesactivar: async (req, res) => {
-        const { id } = req.params;
-        const venta = await Venta.findByIdAndUpdate(id, {estado: 0});
+    res.json({
+      venta: 'activado',
+    });
+  },
+  ventaPutDesactivar: async (req, res) => {
+    const { id } = req.params;
+    const venta = await Venta.findByIdAndUpdate(id, { estado: 0 });
 
-        res.json({
-            "venta": venta.estado
-        })
-    },
-    ventaDelete: async (req, res) => {
-        const { id } = req.params;
-            
-        const venta = await Venta.findByIdAndDelete(id);
+    desactivarVenta(venta._id)
 
-        res.json({
-            "status": "deleted"
-        })
-    }
-}
+    res.json({
+      venta: 'desactivado',
 
+    });
+  },
+};
 
-export default ventaControllers; 
+export default ventaControllers;

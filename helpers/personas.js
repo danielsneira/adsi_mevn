@@ -22,10 +22,18 @@ const validarProveedor = async(id) => {
 	}
 }
 
+const validarCliente = async(id) => {
+	const persona = await Persona.findById(id)
+
+	if(persona.tipoPersona !== 'Cliente'){
+		throw new Error('acceso no autorizado')
+	}
+}
+
 const existePersonaByNombre = async (nombre) => {
     const existe = await Persona.findOne({nombre});
 
     if(existe) throw Error ('Ya existe una persona con ese nombre');
 }
 
-export {existePersonaByEmail, existePersonaByNombre, validarProveedor, existePersonaById}
+export {existePersonaByEmail, existePersonaByNombre, validarProveedor, validarCliente, existePersonaById}

@@ -1,75 +1,83 @@
-import Compra from '../models/compra.js'
+import Compra from "../models/compra.js";
+import { activarCompra, añadirArticulos, desactivarCompra } from "../helpers/ingresos.js"
 
 const compraControllers = {
-    compraPost: async (req, res) => {
-        const { usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}] } = req.body;
-        const compra = new Compra({ usuario, persona, tipoComprobante, serieComprobante, numComprobante, impuesto, total, detalles:[{id, articulo, cantidad, precio}] });
+  compraPost: async (req, res) => {
+    const {
+      usuario,
+      persona,
+      tipoComprobante,
+      serieComprobante,
+      numComprobante,
+      impuesto,
+      total,
+      detalles,
+    } = req.body;
+    const compra = new Compra({
+      usuario,
+      persona,
+      tipoComprobante,
+      serieComprobante,
+      numComprobante,
+      impuesto,
+      total,
+      detalles,
+    });
 
-        await compra.save();
+    detalles.forEach(async (itemCompra) => {
+        añadirArticulos(itemCompra._id, itemCompra.cantidad);
+    });
 
-        res.json({
-            compra
-        })
-    },
-    compraGet: async (req, res) => {
-        const value = req.query.value;
-        const compra = await Compra
-            .find({
-                $or: [
-                { nombre: new RegExp(value, 'i') },
-                { descripcion: new RegExp(value, 'i') }
-            ],
-        });
+    await compra.save();
 
-        res.json({
-            compra
-        })
-    },
-    compraGetById: async (req, res) => {
-        const { id } = req.params;
-        const compra = await Compra
-            .findOne({ _id: id });
+    res.json({
+      compra,
+    });
+  },
 
-        res.json({
-            compra
-        })
-    },
-    compraPut: async (req, res) => {
-        const { id } = req.params;
-        const { _id, estado, createdAt, __v, ...resto} = req.body;
+  compraGet: async (req, res) => {
+    const value = req.query.value;
+    const compra = await Compra.find({
+      $or: [
+        { nombre: new RegExp(value, "i") },
+        { numComprobante: new RegExp(value, "i") },
+      ],
+    });
 
-        const compra = await Compra.findByIdAndUpdate(id, resto);
+    res.json({
+      compra,
+    });
+  },
+  compraGetById: async (req, res) => {
+    const { _id } = req.params;
+    const compra = await Compra.findOne(_id);
 
-        res.json({
-            compra
-        })
-    },
-    compraPutActivar: async (req, res) => {
-        const { id } = req.params;
-        const compra = await Compra.findByIdAndUpdate(id, {estado: 1});
+    res.json({
+      compra,
+    });
+  },
+  
+  compraPutActivar: async (req, res) => {
+    const { id } = req.params;
+    const compra = await Compra.findByIdAndUpdate(id, { estado: 1 });
 
-        res.json({
-            "compra": compra.estado
-        })
-    },
-    compraPutDesactivar: async (req, res) => {
-        const { id } = req.params;
-        const compra = await Compra.findByIdAndUpdate(id, {estado: 0});
+    activarCompra(compra._id);
 
-        res.json({
-            "compra": compra.estado
-        })
-    },
-    compraDelete: async (req, res) => {
-        const { id } = req.params;
-            
-        const compra = await Compra.findByIdAndDelete(id);
+    res.json({
+        compra: 'activado',
+    });
+  },
 
-        res.json({
-            "status": "deleted"
-        })
-    }
-}
+  compraPutDesactivar: async (req, res) => {
+    const { id } = req.params;
+    const compra = await Compra.findByIdAndUpdate(id, { estado: 0 });
 
+    desactivarCompra(compra._id);
 
-export default compraControllers; 
+    res.json({
+      compra: 'desactivado',
+    });
+  },
+};
+
+export default compraControllers;

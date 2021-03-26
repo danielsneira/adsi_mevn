@@ -40,7 +40,7 @@ const articuloControllers = {
     },
     articuloPutActivar: async (req, res) => {
         const { id } = req.params;
-        const articulo = await Articulo.findByIdAndUpdate(id, {estado: 1});
+        await Articulo.findByIdAndUpdate(id, {estado: 1});
 
         res.json({
             "articulo": 'activado'
@@ -48,7 +48,7 @@ const articuloControllers = {
     },
     articuloPutDesactivar: async (req, res) => {
         const { id } = req.params;
-        const articulo = await Articulo.findByIdAndUpdate(id, {estado: 0});
+        await Articulo.findByIdAndUpdate(id, {estado: 0});
 
         res.json({
             "articulo": 'desactivado'
