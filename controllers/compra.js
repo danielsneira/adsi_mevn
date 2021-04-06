@@ -37,12 +37,15 @@ const compraControllers = {
 
   compraGet: async (req, res) => {
     const value = req.query.value;
-    const compra = await Compra.find({
+    const compra = await Compra
+    .find({
       $or: [
         { nombre: new RegExp(value, "i") },
         { numComprobante: new RegExp(value, "i") },
       ],
-    });
+    })
+    .populate('usuario', 'nombre')
+    .populate('persona', 'nombre')
 
     res.json({
       compra,

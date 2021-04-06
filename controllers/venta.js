@@ -36,9 +36,12 @@ const ventaControllers = {
   },
   ventaGet: async (req, res) => {
     const value = req.query.value;
-    const venta = await Venta.find({
-      $or: [{ nombre: new RegExp(value, "i") }, { numComprobante }],
-    });
+    const venta = await Venta
+    .find({
+      $or: [{ nombre: new RegExp(value, "i") }, { numComprobante: new RegExp(value, "i") }],
+    })
+    .populate('usuario', 'nombre')
+    .populate('persona', 'nombre')
 
     res.json({
       venta,

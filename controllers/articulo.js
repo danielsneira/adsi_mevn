@@ -4,7 +4,7 @@ const articuloControllers = {
     articuloGet: async (req, res) => {
         const articulo = await Articulo
             .find()
-            .populate('Categoria', 'nombre')
+            .populate('categoria', 'nombre')
         res.json({
             articulo
         })
