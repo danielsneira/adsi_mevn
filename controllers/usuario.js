@@ -56,8 +56,8 @@ const usuarioControllers = {
         }
         const validarPassword = bcrypt.compareSync(password, usuario.password)
         if (!validarPassword) {
-            return res.json({
-                msg: 'Password incorrecta'
+            return res.status(400).json({
+                msg: 'usuario o clave incorrecta'
             })
         }
 
