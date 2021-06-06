@@ -40,7 +40,11 @@ class Server {
     }
 
     async conectarBD(){
+      try {
         await dbConnection();
+      } catch (error) {
+        console.log(error);
+      }
     }
 }
 
