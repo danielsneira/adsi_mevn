@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import history from "connect-history-api-fallback";
 import dbConnection from '../database/config.js';
 import categoria from '../routes/categoria.js'
 import usuario from '../routes/usuario.js'
@@ -20,6 +21,7 @@ class Server {
     middlewares(){
         this.app.use(express.json());
         this.app.use(cors());
+        this.app.use(history());
         this.app.use(express.static('public'));
     }
 
