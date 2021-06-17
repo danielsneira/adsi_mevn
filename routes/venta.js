@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import ventaControllers from '../controllers/venta.js'
 import { existeUsuarioById } from '../helpers/usuarios.js';
-import { existePersonaById, validarPersona } from '../helpers/personas.js';
+import { existePersonaById, validarProveedor } from '../helpers/personas.js';
 import { validarCampos } from '../middlewares/validar-campos.js';
 import { validarJWT } from '../middlewares/validar-jwt.js'
 import validarRoles from '../middlewares/validar-rol.js'

@@ -13,9 +13,8 @@ class Server {
         this.port = process.env.PORT
         this.app = express();
         this.middlewares();
-        this.conectarBD();
         this.routes();
-
+        this.conectarBD();
     }
     
     middlewares(){
