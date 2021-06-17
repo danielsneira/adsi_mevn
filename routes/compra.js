@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import compraControllers from '../controllers/compra.js'
 import { existeUsuarioById } from '../helpers/usuarios.js';
-import { existePersonaById, validarCliente } from '../helpers/personas.js';
+import { existePersonaById, validarProveedor } from '../helpers/personas.js';
 import { validarCampos } from '../middlewares/validar-campos.js';
 import { validarJWT } from '../middlewares/validar-jwt.js'
 import validarRoles from '../middlewares/validar-rol.js'
@@ -16,7 +16,7 @@ router.post('/', [
     check('usuario').custom(existeUsuarioById),
     check('persona', 'Persona es obligatorio').not().isEmpty(),
     check('persona').custom(existePersonaById),
-    check('persona').custom(validarCliente),
+    check('persona').custom(validarProveedor),
     check('tipoComprobante', 'El tipo de comprobante es obligatorio').not().isEmpty(),
     check('serieComprobante', 'La serie del comprobante es obligatorio').not().isEmpty(),
     check('numComprobante', 'El numero del comprobante es obligatorio').not().isEmpty(),
